@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void openGeneralFragment() {
         Log.d(Settings.UI_TAG, "Open General Fragment");
+        setToolbarTitle(R.string.general);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         currentFragment = new GeneralFragment();
         transaction.replace(R.id.fragmentContainer, currentFragment);
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void openNewsFragment() {
         Log.d(Settings.UI_TAG, "Open News Fragment");
+        setToolbarTitle(R.string.news);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         currentFragment = new NewsFragment();
         transaction.replace(R.id.fragmentContainer, currentFragment);
@@ -108,5 +110,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setToolbarTitle(int stringId) {
+        setTitle(getResources().getString(stringId));
     }
 }
