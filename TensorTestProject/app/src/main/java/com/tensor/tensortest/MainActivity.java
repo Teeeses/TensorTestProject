@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.fragments.NewsFragment;
 
@@ -22,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
         openNewsFragment();
     }
 
+    /**
+     * Открытие новостного фрагмента
+     */
     public void openNewsFragment() {
         Log.d(Settings.UI_TAG, "Open News Fragment");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

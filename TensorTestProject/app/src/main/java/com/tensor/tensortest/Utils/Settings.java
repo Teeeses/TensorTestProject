@@ -7,4 +7,5 @@ package com.tensor.tensortest.Utils;
 public class Settings {
 
     public final static String UI_TAG = "UiLog";
+    public final static String TAG = "Log";
 }
