@@ -35,6 +35,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support:recyclerview-v7:25.0.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:25.1.0'
     testCompile 'junit:junit:4.12'
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'io.reactivex:rxandroid:1.2.1'
