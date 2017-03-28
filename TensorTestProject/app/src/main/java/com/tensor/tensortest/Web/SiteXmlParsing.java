@@ -1,6 +1,14 @@
 package com.tensor.tensortest.Web;
 
-import org.w3c.dom.Document;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.tensor.tensortest.Utils.Settings;
+import com.tensor.tensortest.beans.News;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -24,13 +32,13 @@ public class SiteXmlParsing {
 
     public SiteXmlParsing() {}
 
-    public List<String> getURLs(String urlSite) {
+    public List<String> getNewsLinks(String urlSite) {
         List<String> stringList = new ArrayList<>();
         try {
             URL url = new URL(urlSite);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new InputSource(url.openStream()));
+            org.w3c.dom.Document doc = db.parse(new InputSource(url.openStream()));
             doc.getDocumentElement().normalize();
 
             NodeList nodeList = doc.getElementsByTagName("item");
@@ -54,6 +62,21 @@ public class SiteXmlParsing {
         }
         return stringList;
     }
+
+    public News getNews(String url) {
+        News currentNews = null;
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Elements select = doc.select(".title2");
+            currentNews = new News(select.text());
+            Log.d(Settings.TAG, "Все хорошо");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return currentNews;
+    }
+
 
     private String getNode(String tag, Element element) {
         NodeList linkNodeList = element.getElementsByTagName(tag).item(0)

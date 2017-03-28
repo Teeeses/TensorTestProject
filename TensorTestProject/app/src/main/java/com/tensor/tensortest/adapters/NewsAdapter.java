@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tensor.tensortest.R;
+import com.tensor.tensortest.beans.News;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
-    private List<String> links;
+    private List<News> links;
 
-    public NewsAdapter(List<String> records) {
+    public NewsAdapter(List<News> records) {
         this.links = records;
     }
 
@@ -36,7 +37,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
      */
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        String title = links.get(i);
+        String title = links.get(i).getTitle();
         viewHolder.tvNewTitle.setText(title);
     }
 

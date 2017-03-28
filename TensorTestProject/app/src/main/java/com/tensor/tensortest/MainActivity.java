@@ -80,18 +80,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //Диалог подтверждения выхода
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Действительно выйти?");
-            builder.setPositiveButton("ДА", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton("ДА", (dialog, which) -> {
                     dialog.dismiss();
                     finish();
-                }
             });
-            builder.setNegativeButton("НЕТ", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton("НЕТ", (dialog, which) -> dialog.dismiss());
             AlertDialog alert = builder.create();
             alert.show();
         } else {
