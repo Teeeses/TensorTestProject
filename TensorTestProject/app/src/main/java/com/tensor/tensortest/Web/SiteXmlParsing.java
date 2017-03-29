@@ -3,6 +3,7 @@ package com.tensor.tensortest.Web;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.tensor.tensortest.App.App;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.beans.News;
 
@@ -48,6 +49,7 @@ public class SiteXmlParsing {
                     Element element = (Element) node;
 
                     stringList.add(getNode("link", element));
+                    //new Task().execute(getNode("link", element));
                 }
             }
         } catch (IOException e) {
@@ -63,19 +65,33 @@ public class SiteXmlParsing {
         return stringList;
     }
 
-    public News getNews(String url) {
-        News currentNews = null;
-        try {
-            Document doc = Jsoup.connect(url).get();
-            Elements select = doc.select(".title2");
-            currentNews = new News(select.text());
-            Log.d(Settings.TAG, "Все хорошо");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void getNews(String url) {
+        new Task().execute(url);
+    }
+
+    class Task extends AsyncTask<String, Void, News> {
+
+        @Override
+        protected News doInBackground(String... strings) {
+            News currentNews = null;
+            try {
+                Document doc = Jsoup.connect(strings[0]).get();
+                Elements select = doc.select(".title2");
+                currentNews = new News(select.text());
+                Log.d(Settings.TAG, "Все хорошо");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return currentNews;
         }
 
-        return currentNews;
+        @Override
+        protected void onPostExecute(News news) {
+            super.onPostExecute(news);
+            App.getNews().add(news);
+        }
     }
+
 
 
     private String getNode(String tag, Element element) {

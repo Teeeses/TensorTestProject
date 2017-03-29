@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tensor.tensortest.App.App;
 import com.tensor.tensortest.R;
 import com.tensor.tensortest.beans.News;
 
@@ -19,8 +20,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
     private List<News> links;
 
-    public NewsAdapter(List<News> records) {
-        this.links = records;
+    public NewsAdapter() {
+        this.links = App.getNews();
     }
 
     /**

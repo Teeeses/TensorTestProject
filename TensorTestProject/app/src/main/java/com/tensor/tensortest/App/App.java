@@ -4,6 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tensor.tensortest.beans.News;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by develop on 24.03.2017.
  */
@@ -12,7 +17,7 @@ public class App extends Application {
 
 
     private static Context context;
-    private static Bundle bundle;
+    private static List<News> news = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -20,13 +25,11 @@ public class App extends Application {
         context = getApplicationContext();
     }
 
-    public static Bundle getBundle() {
-        return bundle;
+    public static List<News> getNews() {
+        return news;
     }
 
-    public static void setBundle(Bundle bundle) {
-        App.bundle = bundle;
-    }
+
 
     public static Context getContext() {
         return context;
