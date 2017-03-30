@@ -24,8 +24,8 @@ public class RxRequest {
                     public void call(Subscriber<? super News> subscriber) {
 
                         List<News> news = webParsing.getNewsLinks(WebSetting.SITE_URL);
-                        for(News current: news) {
-                            subscriber.onNext(webParsing.getNews(current));
+                        for(int i = news.size() - 1; i >= 0; i--) {
+                            subscriber.onNext(webParsing.getNews(news.get(i)));
                         }
                         subscriber.onCompleted();
                     }

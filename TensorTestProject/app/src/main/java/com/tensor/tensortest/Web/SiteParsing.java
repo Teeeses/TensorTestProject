@@ -1,5 +1,6 @@
 package com.tensor.tensortest.Web;
 
+import com.tensor.tensortest.App.App;
 import com.tensor.tensortest.beans.News;
 
 import org.jsoup.Jsoup;
@@ -43,6 +44,14 @@ public class SiteParsing {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     News news = new News();
                     Element element = (Element) node;
+                    String datePublicNews = getNode("pubDate", element);
+                    /**
+                     * Проверка: если дата пуцбликации текущей добавляемой новости совпадает с датой публикации самой последней новости(первая в списке),
+                     * то значит все новые новости пройдены, поэтому выходим
+                     */
+                    if(App.getNews().size() != 0 && datePublicNews.equals(App.getNews().get(0).getPubDate())) {
+                        return newsList;
+                    }
                     news.setLink(getNode("link", element));
                     news.setTitle(getNode("title", element));
                     news.setShort_description(getNode("description", element));

@@ -17,6 +17,9 @@ public class App extends Application {
 
 
     private static Context context;
+    /**
+     * Список новостей
+     */
     private static List<News> news = new ArrayList<>();
 
     @Override
@@ -28,8 +31,6 @@ public class App extends Application {
     public static List<News> getNews() {
         return news;
     }
-
-
 
     public static Context getContext() {
         return context;

@@ -1,6 +1,5 @@
 package com.tensor.tensortest.Utils;
 
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +16,7 @@ public class Settings {
     public final static String TAG = "Log";
 
     /**
-     * Перевод строки времени <EEE, d MMM yyyy HH:mm:ss'Z'> в в нужным нам формат
+     * Перевод строки времени <EEE, dd MMM yyyy hh:mm:ss Z> в нужным нам формат
      * @param str - время
      * @return - отформатированное время
      */
@@ -32,5 +31,21 @@ public class Settings {
             ex.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * Переводит время в формате <EEE, dd MMM yyyy hh:mm:ss Z> в миллисекунды
+     * @param str - время
+     * @return - миллисекунды
+     */
+    public static long stringToMills(String str) {
+        SimpleDateFormat  formatter = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.ROOT);
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            return formatter.parse(str).getTime();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return System.currentTimeMillis();
     }
 }
