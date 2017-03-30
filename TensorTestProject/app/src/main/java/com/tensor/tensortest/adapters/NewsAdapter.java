@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import com.tensor.tensortest.App.App;
 import com.tensor.tensortest.R;
+import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.beans.News;
 
 import java.util.List;
+
 
 /**
  * Created by develop on 24.03.2017.
@@ -18,10 +20,10 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
-    private List<News> links;
+    private List<News> news;
 
     public NewsAdapter() {
-        this.links = App.getNews();
+        this.news = App.getNews();
     }
 
     /**
@@ -38,13 +40,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
      */
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        String title = links.get(i).getTitle();
-        viewHolder.tvNewTitle.setText(title);
+        viewHolder.tvNewTitle.setText(news.get(i).getTitle());
+        viewHolder.tvPubDate.setText(Settings.timeToString(news.get(i).getPubDate()));
+        viewHolder.tvShortDescription.setText(news.get(i).getShort_description());
     }
 
     @Override
     public int getItemCount() {
-        return links.size();
+        return news.size();
     }
 
     @Override
@@ -57,10 +60,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
      */
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvNewTitle;
+        private TextView tvPubDate;
+        private TextView tvShortDescription;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvNewTitle = (TextView) itemView.findViewById(R.id.tvNewTitle);
+            tvPubDate = (TextView) itemView.findViewById(R.id.tvPubDate);
+            tvShortDescription = (TextView) itemView.findViewById(R.id.tvShortDescription);
         }
     }
 }

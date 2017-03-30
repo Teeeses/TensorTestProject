@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/standard_margin" >
+    android:layout_marginLeft="@dimen/mini_margin"
+    android:layout_marginRight="@dimen/mini_margin"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp" >
 
-    <TextView
-        android:id="@+id/tvNewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/mini_margin"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvPubDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/mini_size_text"/>
+
+        <TextView
+            android:id="@+id/tvNewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="4dp"
+            android:textSize="@dimen/standard_size_text"/>
+
+        <TextView
+            android:id="@+id/tvShortDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mini_margin"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/mini_size_text"/>
+    </LinearLayout>
 
 </LinearLayout>

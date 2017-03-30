@@ -2,11 +2,13 @@
 <resources>
 
     <dimen name="standard_size_text">16sp</dimen>
+    <dimen name="mini_size_text">12sp</dimen>
 
     <dimen name="mini_margin">8dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="big_margin">32dp</dimen>
 
     <dimen name="radius_angle">4dp</dimen>
+    <dimen name="width_line">1dp</dimen>
 
 </resources>
