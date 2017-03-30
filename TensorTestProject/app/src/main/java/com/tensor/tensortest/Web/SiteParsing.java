@@ -1,10 +1,5 @@
 package com.tensor.tensortest.Web;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.tensor.tensortest.App.App;
-import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.beans.News;
 
 import org.jsoup.Jsoup;
@@ -29,12 +24,12 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by develop on 23.03.2017.
  */
 
-public class SiteXmlParsing {
+public class SiteParsing {
 
-    public SiteXmlParsing() {}
+    public SiteParsing() {}
 
-    public List<String> getNewsLinks(String urlSite) {
-        List<String> stringList = new ArrayList<>();
+    public List<News> getNewsLinks(String urlSite) {
+        List<News> newsList = new ArrayList<>();
         try {
             URL url = new URL(urlSite);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -46,10 +41,13 @@ public class SiteXmlParsing {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    News news = new News();
                     Element element = (Element) node;
-
-                    stringList.add(getNode("link", element));
-                    //new Task().execute(getNode("link", element));
+                    news.setLink(getNode("link", element));
+                    news.setTitle(getNode("title", element));
+                    news.setShort_description(getNode("description", element));
+                    news.setPubDate(getNode("pubDate", element));
+                    newsList.add(news);
                 }
             }
         } catch (IOException e) {
@@ -62,36 +60,19 @@ public class SiteXmlParsing {
             e.printStackTrace();
             return null;
         }
-        return stringList;
+        return newsList;
     }
 
-    public void getNews(String url) {
-        new Task().execute(url);
-    }
-
-    class Task extends AsyncTask<String, Void, News> {
-
-        @Override
-        protected News doInBackground(String... strings) {
-            News currentNews = null;
-            try {
-                Document doc = Jsoup.connect(strings[0]).get();
-                Elements select = doc.select(".title2");
-                currentNews = new News(select.text());
-                Log.d(Settings.TAG, "Все хорошо");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return currentNews;
+    public News getNews(News news) {
+        try {
+            Document doc = Jsoup.connect(news.getLink()).get();
+            Elements select = doc.select(".title2");
+            news.setDescription(select.text());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        @Override
-        protected void onPostExecute(News news) {
-            super.onPostExecute(news);
-            App.getNews().add(news);
-        }
+        return news;
     }
-
 
 
     private String getNode(String tag, Element element) {
