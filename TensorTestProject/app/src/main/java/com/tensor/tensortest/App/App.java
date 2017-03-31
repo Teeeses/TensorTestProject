@@ -1,8 +1,7 @@
-package com.tensor.tensortest.App;
+package com.tensor.tensortest.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Bundle;
 
 import com.tensor.tensortest.beans.News;
 

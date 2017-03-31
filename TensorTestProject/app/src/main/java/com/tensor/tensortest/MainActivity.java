@@ -1,6 +1,5 @@
 package com.tensor.tensortest;
 
-import android.content.DialogInterface;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,8 +14,10 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.tensor.tensortest.Utils.Settings;
+import com.tensor.tensortest.beans.News;
+import com.tensor.tensortest.fragments.CurrentNewsFragment;
 import com.tensor.tensortest.fragments.GeneralFragment;
-import com.tensor.tensortest.fragments.NewsFragment;
+import com.tensor.tensortest.fragments.NewsListFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -58,14 +59,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Открытие новостного фрагмента
+     * Открытие фрагмента со списком новостей
      */
     public void openNewsFragment() {
-        Log.d(Settings.UI_TAG, "Open News Fragment");
+        Log.d(Settings.UI_TAG, "Open News List Fragment");
         setToolbarTitle(R.string.news);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new NewsFragment();
+        currentFragment = new NewsListFragment();
         transaction.replace(R.id.fragmentContainer, currentFragment);
+        transaction.commit();
+    }
+
+    /**
+     * Открытие фрагмента новсти на которую нажали в списке
+     */
+    public void openCurrentNewsFragment(News news) {
+        Log.d(Settings.UI_TAG, "Open Current News Fragment");
+        setToolbarTitle(R.string.news);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        currentFragment = CurrentNewsFragment.newInstance(news);
+        transaction.add(R.id.fragmentContainer, currentFragment);
+        transaction.addToBackStack("Current news fragment");
         transaction.commit();
     }
 
