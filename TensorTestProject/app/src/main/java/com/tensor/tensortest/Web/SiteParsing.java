@@ -1,6 +1,6 @@
 package com.tensor.tensortest.Web;
 
-import com.tensor.tensortest.App.App;
+import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
 
 import org.jsoup.Jsoup;
@@ -29,6 +29,11 @@ public class SiteParsing {
 
     public SiteParsing() {}
 
+    /**
+     * Получение краткого содержания новостей
+     * @param urlSite - сайт откуда берем информацию о новостях
+     * @return - возвращаем список новостей с неполной информацией
+     */
     public List<News> getNewsLinks(String urlSite) {
         List<News> newsList = new ArrayList<>();
         try {
@@ -72,18 +77,32 @@ public class SiteParsing {
         return newsList;
     }
 
+    /**
+     * Получаем все отсальные данные о новости перейдя по ссылке link
+     * @param news - новость которую нужно дозаполнить
+     * @return - возвращаем новоть которую дополнили информацией
+     */
     public News getNews(News news) {
-        try {
-            Document doc = Jsoup.connect(news.getLink()).get();
-            Elements select = doc.select(".title2");
-            news.setDescription(select.text());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Thread myThready = new Thread(() -> {
+            try {
+                Document doc = Jsoup.connect(news.getLink()).get();
+                Elements select = doc.select(".title2");
+                news.setDescription(select.text());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        myThready.start();
+
         return news;
     }
 
-
+    /**
+     * Получение содержимого по тегу
+     * @param tag - название тега
+     * @param element - элемент в котором он содержиться
+     * @return - возвращаем содержание
+     */
     private String getNode(String tag, Element element) {
         NodeList linkNodeList = element.getElementsByTagName(tag).item(0)
                 .getChildNodes();

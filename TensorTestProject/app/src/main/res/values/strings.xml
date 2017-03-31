@@ -6,6 +6,7 @@
 
 
     <string name="loading">Загрузка...</string>
+    <string name="error">Ошибка</string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

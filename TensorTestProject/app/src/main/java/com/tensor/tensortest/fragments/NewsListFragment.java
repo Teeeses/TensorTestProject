@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.tensor.tensortest.App.App;
+import com.tensor.tensortest.app.App;
+import com.tensor.tensortest.MainActivity;
 import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.Web.RxRequest;
@@ -20,25 +22,31 @@ import rx.Subscriber;
 
 /**
  * Created by develop on 23.03.2017.
+ * Фрагмент со списком новостей
  */
 
-public class NewsFragment extends Fragment {
+public class NewsListFragment extends Fragment {
 
-    private RecyclerView newsRecyclerView;
     private NewsAdapter adapter;
-
     private SwipeRefreshLayout swipeRefresher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_news, container, false);
 
-        newsRecyclerView = (RecyclerView) view.findViewById(R.id.newsRecyclerView);
+        RecyclerView newsRecyclerView = (RecyclerView) view.findViewById(R.id.newsRecyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         newsRecyclerView.setLayoutManager(manager);
 
-        adapter = new NewsAdapter();
+        adapter = new NewsAdapter(getContext(), (View recyclerView, int position) -> {
+            if(position >= 0) {
+                ((MainActivity) getActivity()).openCurrentNewsFragment(App.getNews().get(position));
+            }
+            Log.d(Settings.TAG, Integer.toString(position));
+        });
         newsRecyclerView.setAdapter(adapter);
+        newsRecyclerView.addOnItemTouchListener(adapter);
+
 
         swipeRefresher = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeRefresher.setOnRefreshListener(() -> {
@@ -67,6 +75,7 @@ public class NewsFragment extends Fragment {
             @Override
             public void onError(Throwable e) {
                 Log.d(Settings.TAG, "Ошибка: " + e.toString());
+                Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 swipeRefresher.setRefreshing(false);
             }
 

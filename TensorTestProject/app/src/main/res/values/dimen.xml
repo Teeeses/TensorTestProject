@@ -2,6 +2,8 @@
 <resources>
 
     <dimen name="standard_size_text">16sp</dimen>
+    <dimen name="more_standard_size_text">24sp</dimen>
+    <dimen name="big_size_text">32sp</dimen>
     <dimen name="mini_size_text">12sp</dimen>
 
     <dimen name="mini_margin">8dp</dimen>
