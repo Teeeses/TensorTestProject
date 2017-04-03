@@ -18,13 +18,12 @@ import rx.schedulers.Schedulers;
 public class RxRequest {
 
     /**
-     * Создаем общий Observable для получения списка со всей информацией о новости уже по ссылку из Link
+     * Создаем общий Observable для получения списка со всей информацией о новости уже по ссылке из Link
      * @return - Observable
      */
     public static Observable<News> getNewsObservable() {
         SiteParsing webParsing = new SiteParsing();
         return queryNewsLinks()
-                .observeOn(Schedulers.newThread())
                 .flatMap((news) -> {
                         Collections.reverse(news);
                         return Observable.from(news);

@@ -81,7 +81,7 @@ public class NewsListFragment extends Fragment {
 
             @Override
             public void onNext(News news) {
-                Log.d(Settings.TAG, "Новость: " + news.getTitle() + " " + news.getShort_description());
+                Log.d(Settings.TAG, "Новость: " + news.getTitle() + " " + news.getShortDescription());
                 App.getNews().add(0, news);
                 adapter.notifyDataSetChanged();
             }

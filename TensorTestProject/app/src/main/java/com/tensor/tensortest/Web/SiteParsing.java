@@ -1,5 +1,8 @@
 package com.tensor.tensortest.Web;
 
+import android.util.Log;
+
+import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
 
@@ -59,7 +62,7 @@ public class SiteParsing {
                     }
                     news.setLink(getNode("link", element));
                     news.setTitle(getNode("title", element));
-                    news.setShort_description(getNode("description", element));
+                    news.setShortDescription(getNode("description", element));
                     news.setPubDate(getNode("pubDate", element));
                     newsList.add(news);
                 }
@@ -86,8 +89,13 @@ public class SiteParsing {
         Thread myThready = new Thread(() -> {
             try {
                 Document doc = Jsoup.connect(news.getLink()).get();
-                Elements select = doc.select(".title2");
-                news.setDescription(select.text());
+                Elements element = doc.select(".img-responsive");
+                String src = element.attr("src");
+                news.setLinkImage(src);
+                news.setImage(Settings.drawableFromUrl(src));
+                news.setImageTitle(element.attr("title"));
+                news.setDescription(getDescription(doc));
+                news.setReady(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -95,6 +103,27 @@ public class SiteParsing {
         myThready.start();
 
         return news;
+    }
+
+    /**
+     * Получение полного описания новости
+     * @param doc - страница с новостью которую открыли
+     * @return - возвращаем строку со всеми обзацами новости
+     */
+    public String getDescription(Document doc) {
+        StringBuilder strBuilder = new StringBuilder();
+        Elements select = doc.select(".js-mediator-article p");
+        for(int i = 0; i < select.size(); i++) {
+            String str = select.get(i).text().trim();
+            if(!str.equals("")) {
+                if(i != 0)
+                    strBuilder.append("\n\n");
+                strBuilder.append("     ").append(str);
+            }
+            Log.d(Settings.TAG, select.get(i).text());
+        }
+
+        return strBuilder.toString();
     }
 
     /**

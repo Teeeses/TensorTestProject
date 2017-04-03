@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.beans.News;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private DrawerLayout drawer;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -81,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.add(R.id.fragmentContainer, currentFragment);
         transaction.addToBackStack("Current news fragment");
         transaction.commit();
+    }
+
+    public void setProgressBarVisibility(int visible) {
+        progressBar.setVisibility(visible);
     }
 
 

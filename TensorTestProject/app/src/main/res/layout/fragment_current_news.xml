@@ -7,15 +7,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/standard_margin"
         android:orientation="vertical" >
 
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/tvImageTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/more_standard_size_text"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/radius_angle"
+            android:layout_marginLeft="@dimen/big_margin"
+            android:layout_marginRight="@dimen/big_margin"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/mini_size_text"
+            android:textColor="@android:color/black"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/mini_margin"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:textSize="@dimen/standard_size_text"/>
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
