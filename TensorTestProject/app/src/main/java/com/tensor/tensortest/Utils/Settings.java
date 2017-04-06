@@ -69,4 +69,10 @@ public class Settings {
         x = BitmapFactory.decodeStream(input);
         return new BitmapDrawable(x);
     }
+
+    public static Bitmap resize(Drawable image, int width, int height) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, width, height, false);
+        return bitmapResized;
+    }
 }

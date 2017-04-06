@@ -1,8 +1,10 @@
 package com.tensor.tensortest.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 
 import com.tensor.tensortest.MainActivity;
 import com.tensor.tensortest.R;
+import com.tensor.tensortest.Utils.Settings;
+import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
 
 /**
@@ -57,7 +61,11 @@ public class CurrentNewsFragment extends Fragment {
     }
 
     private void updateInfo() {
-        ivImage.setBackgroundDrawable(currentNews.getImage());
+        Drawable image = currentNews.getImage();
+        if(image != null) {
+            float mode = App.getWidthScreen()/image.getIntrinsicWidth();
+            ivImage.setImageBitmap(Settings.resize(image, (int)(image.getIntrinsicWidth()*mode), (int)(image.getIntrinsicHeight()*mode)));
+        }
         tvImageTitle.setText(currentNews.getImageTitle());
         tvDescription.setText(currentNews.getDescription());
     }
