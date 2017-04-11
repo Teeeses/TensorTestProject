@@ -3,6 +3,11 @@ package com.tensor.tensortest.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.tensor.tensortest.Utils.Settings;
+
+import java.util.Set;
 
 /**
  * Created by develop on 03.04.2017.
@@ -16,6 +21,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
 
     public NewsDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        Log.d(Settings.TAG, "Constructor dbHelper");
     }
 
     /**
@@ -31,6 +37,8 @@ public class NewsDbHelper extends SQLiteOpenHelper {
                 + NewsContract.NewsEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, "
                 + NewsContract.NewsEntry.COLUMN_PUB_DATE + " TEXT NOT NULL, "
                 + NewsContract.NewsEntry.COLUMN_IMAGE_TITLE + " TEXT NOT NULL);";
+
+        Log.d(Settings.TAG, SQL_CREATE_TABLE);
 
         // Запускаем создание таблицы
         db.execSQL(SQL_CREATE_TABLE);

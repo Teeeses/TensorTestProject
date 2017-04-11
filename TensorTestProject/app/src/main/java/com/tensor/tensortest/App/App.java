@@ -37,7 +37,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        NewsDbHelper dbHelper = new NewsDbHelper(getApplicationContext());
+        dbHelper = new NewsDbHelper(getApplicationContext());
         networkStatus = (NetworkUtil.getConnectivityStatusString(getApplicationContext()) == NetworkUtil.TYPE_NOT_CONNECTED ? false : true);
     }
 
