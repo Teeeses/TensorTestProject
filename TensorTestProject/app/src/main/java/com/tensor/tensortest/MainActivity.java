@@ -10,11 +10,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 
 import com.tensor.tensortest.Utils.Settings;
+import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
 import com.tensor.tensortest.fragments.CurrentNewsFragment;
 import com.tensor.tensortest.fragments.GeneralFragment;
@@ -34,6 +36,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+        App.setWidthScreen(displaymetrics.widthPixels);
+        App.setHeightScreen(displaymetrics.heightPixels);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -47,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         openGeneralFragment();
+
     }
 
     /**

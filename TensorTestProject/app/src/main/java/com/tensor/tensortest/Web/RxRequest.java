@@ -2,12 +2,10 @@ package com.tensor.tensortest.Web;
 
 import com.tensor.tensortest.beans.News;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -39,13 +37,9 @@ public class RxRequest {
      */
     public static Observable<List<News>> queryNewsLinks() {
         SiteParsing webParsing = new SiteParsing();
-        return Observable.create(
-                new Observable.OnSubscribe<List<News>>() {
-                    @Override
-                    public void call(Subscriber<? super List<News>> subscriber) {
+        return Observable.create( (Observable.OnSubscribe<List<News>>) subscriber -> {
                         subscriber.onNext(webParsing.getNewsLinks(WebSetting.SITE_URL));
                         subscriber.onCompleted();
-                    }
                 }).subscribeOn(Schedulers.newThread());
     }
 }

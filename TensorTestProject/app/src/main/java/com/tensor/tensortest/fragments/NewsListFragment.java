@@ -1,5 +1,7 @@
 package com.tensor.tensortest.fragments;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +20,8 @@ import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.Web.RxRequest;
 import com.tensor.tensortest.adapters.NewsAdapter;
 import com.tensor.tensortest.beans.News;
+import com.tensor.tensortest.data.NewsContract;
+
 import rx.Subscriber;
 
 /**
@@ -50,12 +54,10 @@ public class NewsListFragment extends Fragment {
 
         swipeRefresher = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeRefresher.setOnRefreshListener(() -> {
-                refresh();
-                swipeRefresher.setRefreshing(true);
+            update();
         });
 
-        refresh();
-        swipeRefresher.setRefreshing(true);
+        update();
 
         return view;
     }
@@ -63,7 +65,29 @@ public class NewsListFragment extends Fragment {
     /**
      * Обновление новостного листа
      */
-    public void refresh() {
+    public void update() {
+        swipeRefresher.setRefreshing(true);
+        Log.d(Settings.TAG, "Internet status: " + Boolean.toString(App.isNetworkStatus()));
+
+        if(App.isNetworkStatus()) {
+            refreshFromSite();
+        } else {
+            refreshFromDatabase();
+        }
+    }
+
+    /**
+     * Получение данных из базы данных
+     */
+    private void refreshFromDatabase() {
+        SQLiteDatabase db = App.getDbHelper().getReadableDatabase();
+
+    }
+
+    /**
+     * Получение данных с сайта
+     */
+    public void refreshFromSite() {
         Subscriber<News> mySubscriber = new Subscriber<News>() {
             @Override
             public void onCompleted() {
@@ -87,5 +111,18 @@ public class NewsListFragment extends Fragment {
             }
         };
         RxRequest.getNewsObservable().subscribe(mySubscriber);
+    }
+
+    public void saveNewsInDatabase(News news) {
+        SQLiteDatabase db = App.getDbHelper().getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NewsContract.NewsEntry.COLUMN_TITLE, news.getTitle());
+        values.put(NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION, news.getShortDescription());
+        values.put(NewsContract.NewsEntry.COLUMN_DESCRIPTION, news.getDescription());
+        values.put(NewsContract.NewsEntry.COLUMN_PUB_DATE, news.getPubDate());
+        values.put(NewsContract.NewsEntry.COLUMN_IMAGE_TITLE, news.getImageTitle());
+
+        long newRowId = db.insert(NewsContract.NewsEntry.TABLE_NAME, null, values);
     }
 }

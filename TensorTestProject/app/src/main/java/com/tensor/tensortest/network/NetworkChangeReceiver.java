@@ -3,7 +3,6 @@ package com.tensor.tensortest.network;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.tensor.tensortest.app.App;
 
@@ -22,6 +21,5 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         } else {
             App.setNetworkStatus(true);
         }
-        Toast.makeText(context, status, Toast.LENGTH_LONG).show();
     }
 }

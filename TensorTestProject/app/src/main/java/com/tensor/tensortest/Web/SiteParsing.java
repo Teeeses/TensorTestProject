@@ -120,7 +120,6 @@ public class SiteParsing {
                     strBuilder.append("\n\n");
                 strBuilder.append("     ").append(str);
             }
-            Log.d(Settings.TAG, select.get(i).text());
         }
 
         return strBuilder.toString();

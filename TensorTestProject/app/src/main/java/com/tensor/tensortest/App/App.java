@@ -2,6 +2,7 @@ package com.tensor.tensortest.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 
 import com.tensor.tensortest.beans.News;
 import com.tensor.tensortest.data.NewsDbHelper;
@@ -23,6 +24,10 @@ public class App extends Application {
     private static List<News> news = new ArrayList<>();
 
     private static NewsDbHelper dbHelper;
+
+
+    private static float widthScreen;
+    private static float heightScreen;
 
     /**
      * Есть интернет или нет
@@ -50,5 +55,21 @@ public class App extends Application {
 
     public static List<News> getNews() {
         return news;
+    }
+
+    public static float getWidthScreen() {
+        return widthScreen;
+    }
+
+    public static void setWidthScreen(float widthScreen) {
+        App.widthScreen = widthScreen;
+    }
+
+    public static float getHeightScreen() {
+        return heightScreen;
+    }
+
+    public static void setHeightScreen(float heightScreen) {
+        App.heightScreen = heightScreen;
     }
 }
