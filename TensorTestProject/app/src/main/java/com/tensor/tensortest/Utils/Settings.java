@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -59,6 +60,10 @@ public class Settings {
         return System.currentTimeMillis();
     }
 
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        return ((BitmapDrawable) drawable).getBitmap();
+    }
+
     public static Drawable drawableFromUrl(String url) throws IOException {
         Bitmap x;
 
@@ -74,5 +79,17 @@ public class Settings {
         Bitmap b = ((BitmapDrawable)image).getBitmap();
         Bitmap bitmapResized = Bitmap.createScaledBitmap(b, width, height, false);
         return bitmapResized;
+    }
+
+    // convert from bitmap to byte array
+    public static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    // convert from byte array to bitmap
+    public static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }

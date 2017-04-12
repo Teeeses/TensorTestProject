@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 
 public class NewsContract {
 
-    private NewsContract() {};
+    private NewsContract() {}
 
     public static final class NewsEntry implements BaseColumns {
 
@@ -20,5 +20,7 @@ public class NewsContract {
         public final static String COLUMN_DESCRIPTION = "description";
         public final static String COLUMN_PUB_DATE = "pubDate";
         public final static String COLUMN_IMAGE_TITLE = "imageTitle";
+        public final static String COLUMN_READY = "ready";
+        public final static String COLUMN_IMAGE = "image";
     }
 }

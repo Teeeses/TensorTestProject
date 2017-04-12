@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tensor.tensortest.beans.News;
+import com.tensor.tensortest.data.DataSource;
 import com.tensor.tensortest.data.NewsDbHelper;
 import com.tensor.tensortest.network.NetworkUtil;
 
@@ -23,7 +24,7 @@ public class App extends Application {
      */
     private static List<News> news = new ArrayList<>();
 
-    private static NewsDbHelper dbHelper;
+    private static DataSource dataSource;
 
 
     private static float widthScreen;
@@ -37,7 +38,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        dbHelper = new NewsDbHelper(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
         networkStatus = (NetworkUtil.getConnectivityStatusString(getApplicationContext()) == NetworkUtil.TYPE_NOT_CONNECTED ? false : true);
     }
 
@@ -49,8 +50,8 @@ public class App extends Application {
         App.networkStatus = networkStatus;
     }
 
-    public static NewsDbHelper getDbHelper() {
-        return dbHelper;
+    public static DataSource getDataSource() {
+        return dataSource;
     }
 
     public static List<News> getNews() {
@@ -65,11 +66,11 @@ public class App extends Application {
         App.widthScreen = widthScreen;
     }
 
-    public static float getHeightScreen() {
-        return heightScreen;
-    }
-
     public static void setHeightScreen(float heightScreen) {
         App.heightScreen = heightScreen;
+    }
+
+    public static void addToListNews(List<News> list) {
+        App.getNews().addAll(0, list);
     }
 }

@@ -1,6 +1,9 @@
 package com.tensor.tensortest.beans;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+
+import com.tensor.tensortest.Utils.Settings;
 
 /**
  * Created by develop on 24.03.2017.
@@ -23,17 +26,21 @@ public class News {
     //Дата публикации
     private String pubDate;
 
-    //src у img
+    //Время публикации в миллисекундах
+    private long timeMills;
+
+    //src у img в html документе
     private String linkImage;
 
     //Надпись под изображением
     private String imageTitle;
 
     //Изображение новости
-    private Drawable image;
+    private Bitmap image;
 
     //Получены новости или нет
     private Boolean ready = false;
+
 
 
     public News() {}
@@ -46,11 +53,11 @@ public class News {
         this.ready = ready;
     }
 
-    public Drawable getImage() {
+    public Bitmap getImage() {
         return image;
     }
 
-    public void setImage(Drawable image) {
+    public void setImage(Bitmap image) {
         this.image = image;
     }
 
@@ -100,6 +107,7 @@ public class News {
 
     public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
+        setTimeMills();
     }
 
     public void setTitle(String title) {
@@ -108,5 +116,17 @@ public class News {
 
     public String getTitle() {
         return title;
+    }
+
+    public long getTimeMills() {
+        return timeMills;
+    }
+
+    public void setTimeMills() {
+        timeMills = Settings.stringToMills(pubDate);
+    }
+
+    public Boolean getReady() {
+        return ready;
     }
 }

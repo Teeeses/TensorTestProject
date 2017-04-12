@@ -1,5 +1,6 @@
 package com.tensor.tensortest.fragments;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,10 +62,10 @@ public class CurrentNewsFragment extends Fragment {
     }
 
     private void updateInfo() {
-        Drawable image = currentNews.getImage();
+        Bitmap image = currentNews.getImage();
         if(image != null) {
-            float mode = App.getWidthScreen()/image.getIntrinsicWidth();
-            ivImage.setImageBitmap(Settings.resize(image, (int)(image.getIntrinsicWidth()*mode), (int)(image.getIntrinsicHeight()*mode)));
+            float mode = App.getWidthScreen()/image.getWidth();
+            ivImage.setImageBitmap(Bitmap.createScaledBitmap(image, (int)(image.getWidth()*mode), (int)(image.getHeight()*mode), false));
         }
         tvImageTitle.setText(currentNews.getImageTitle());
         tvDescription.setText(currentNews.getDescription());

@@ -137,4 +137,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setToolbarTitle(int stringId) {
         setTitle(getResources().getString(stringId));
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        App.getDataSource().open();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getDataSource().close();
+    }
 }

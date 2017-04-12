@@ -92,10 +92,11 @@ public class SiteParsing {
                 Elements element = doc.select(".img-responsive");
                 String src = element.attr("src");
                 news.setLinkImage(src);
-                news.setImage(Settings.drawableFromUrl(src));
+                news.setImage(Settings.drawableToBitmap(Settings.drawableFromUrl(src)));
                 news.setImageTitle(element.attr("title"));
                 news.setDescription(getDescription(doc));
                 news.setReady(true);
+                App.getDataSource().addNews(news);
             } catch (IOException e) {
                 e.printStackTrace();
             }

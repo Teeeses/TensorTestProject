@@ -1,7 +1,5 @@
 package com.tensor.tensortest.fragments;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,9 +19,9 @@ import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.Web.RxRequest;
 import com.tensor.tensortest.adapters.NewsAdapter;
 import com.tensor.tensortest.beans.News;
-import com.tensor.tensortest.data.NewsContract;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -56,12 +54,9 @@ public class NewsListFragment extends Fragment {
 
 
         swipeRefresher = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        swipeRefresher.setOnRefreshListener(() -> {
-            update();
-        });
+        swipeRefresher.setOnRefreshListener(() -> update());
 
         update();
-        getDataDB();
 
         return view;
     }
@@ -74,9 +69,11 @@ public class NewsListFragment extends Fragment {
         Log.d(Settings.TAG, "Internet status: " + Boolean.toString(App.isNetworkStatus()));
 
         if(App.isNetworkStatus()) {
+            refreshFromDatabase();
             refreshFromSite();
         } else {
             refreshFromDatabase();
+            swipeRefresher.setRefreshing(false);
         }
     }
 
@@ -84,8 +81,23 @@ public class NewsListFragment extends Fragment {
      * Получение данных из базы данных
      */
     private void refreshFromDatabase() {
-        SQLiteDatabase db = App.getDbHelper().getReadableDatabase();
+        List<News> listNews = App.getDataSource().getAllNews();
+        //Сортируем список полученный из базы по времени добовления новости(элемент с индексом 0 - самая свежая новость)
+        Collections.sort(listNews, (a, b) -> a.getTimeMills() < b.getTimeMills() ? 1  : -1);
 
+        List<News> generalList = App.getNews();
+        //Добавляем только те новости, которых нет в списке новостей
+        for(int i = listNews.size() - 1; i >= 0; i--) {
+            if(generalList.size() != 0) {
+                if (listNews.get(i).getTimeMills() > generalList.get(0).getTimeMills()) {
+
+                    Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
+                    generalList.add(0, listNews.get(i));
+                }
+            } else {
+                generalList.add(0, listNews.get(i));
+            }
+        }
     }
 
     /**
@@ -112,54 +124,8 @@ public class NewsListFragment extends Fragment {
                 Log.d(Settings.TAG, "Новость: " + news.getTitle() + " " + news.getShortDescription());
                 App.getNews().add(0, news);
                 adapter.notifyDataSetChanged();
-                saveNewsInDatabase(news);
             }
         };
         RxRequest.getNewsObservable().subscribe(mySubscriber);
-    }
-
-    public void saveNewsInDatabase(News news) {
-        SQLiteDatabase db = App.getDbHelper().getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(NewsContract.NewsEntry.COLUMN_TITLE, news.getTitle());
-        values.put(NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION, news.getShortDescription());
-        values.put(NewsContract.NewsEntry.COLUMN_DESCRIPTION, news.getDescription());
-        values.put(NewsContract.NewsEntry.COLUMN_PUB_DATE, news.getPubDate());
-        values.put(NewsContract.NewsEntry.COLUMN_IMAGE_TITLE, news.getImageTitle());
-
-        long newRowId = db.insert(NewsContract.NewsEntry.TABLE_NAME, null, values);
-
-        // Выводим сообщение в успешном случае или при ошибке
-        if (newRowId == -1) {
-            // Если ID  -1, значит произошла ошибка
-            Toast.makeText(getActivity(), "Ошибка при заведении гостя", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getActivity(), "Гость заведён под номером: " + newRowId, Toast.LENGTH_SHORT).show();
-        }
-        App.getDbHelper().close();
-    }
-
-    public void getDataDB() {
-        SQLiteDatabase db = App.getDbHelper().getReadableDatabase();
-        Cursor c = db.query(NewsContract.NewsEntry.TABLE_NAME, null, null, null, null, null, null);
-
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
-        if (c.moveToFirst()) {
-
-            // определяем номера столбцов по имени в выборке
-            int idTitle = c.getColumnIndex("title");
-            int idShortDescription = c.getColumnIndex("shortDescription");
-            int idDescription = c.getColumnIndex("description");
-            int idPubDate = c.getColumnIndex("pubDate");
-            int idImageTitle = c.getColumnIndex("imageTitle");
-
-            do {
-                Log.d(Settings.TAG, c.getString(idTitle) + " " + c.getString(idShortDescription) + " " + c.getString(idDescription) + " " + c.getString(idPubDate) + " " + c.getString(idImageTitle) + "\n");
-            } while (c.moveToNext());
-        } else
-            Log.d(Settings.TAG, "0 rows");
-        c.close();
     }
 }

@@ -17,7 +17,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "news.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 5;
 
     public NewsDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,14 +29,17 @@ public class NewsDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(Settings.TAG, "dbHelper onCreate");
         // Строка для создания таблицы
-        String SQL_CREATE_TABLE = "CREATE TABLE " + NewsContract.NewsEntry.TABLE_NAME + " ("
-                + NewsContract.NewsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + NewsContract.NewsEntry.COLUMN_TITLE + " TEXT NOT NULL, "
-                + NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION + " TEXT NOT NULL, "
-                + NewsContract.NewsEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, "
-                + NewsContract.NewsEntry.COLUMN_PUB_DATE + " TEXT NOT NULL, "
-                + NewsContract.NewsEntry.COLUMN_IMAGE_TITLE + " TEXT NOT NULL);";
+        String SQL_CREATE_TABLE = "create table " + NewsContract.NewsEntry.TABLE_NAME + " ("
+                + NewsContract.NewsEntry._ID + " integer primary key autoincrement, "
+                + NewsContract.NewsEntry.COLUMN_TITLE + " text not null, "
+                + NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION + " text not null, "
+                + NewsContract.NewsEntry.COLUMN_DESCRIPTION + " text not null, "
+                + NewsContract.NewsEntry.COLUMN_PUB_DATE + " text not null, "
+                + NewsContract.NewsEntry.COLUMN_IMAGE_TITLE + " text not null, "
+                + NewsContract.NewsEntry.COLUMN_READY + " text not null, "
+                + NewsContract.NewsEntry.COLUMN_IMAGE + " BLOB);";
 
         Log.d(Settings.TAG, SQL_CREATE_TABLE);
 
@@ -49,6 +52,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(Settings.TAG, "dbHelper onUpgrade");
         db.execSQL("DROP TABLE IF EXISTS " + NewsContract.NewsEntry.TABLE_NAME);
         onCreate(db);
     }
