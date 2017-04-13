@@ -1,7 +1,5 @@
 package com.tensor.tensortest.Web;
 
-import android.util.Log;
-
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
@@ -81,7 +79,7 @@ public class SiteParsing {
     }
 
     /**
-     * Получаем все отсальные данные о новости перейдя по ссылке link
+     * Получаем все отсальные данные о новости перейдя по ссылке link и добавляем в базу
      * @param news - новость которую нужно дозаполнить
      * @return - возвращаем новоть которую дополнили информацией
      */
@@ -89,11 +87,12 @@ public class SiteParsing {
         Thread myThready = new Thread(() -> {
             try {
                 Document doc = Jsoup.connect(news.getLink()).get();
+                //Elements element = doc.select(".fotorama__img");
                 Elements element = doc.select(".img-responsive");
+
+                //Elements elementImageTitle = doc.getElementsByClass(".fotorama__caption__wrap");
                 String src = element.attr("src");
-                news.setLinkImage(src);
-                news.setImage(Settings.drawableToBitmap(Settings.drawableFromUrl(src)));
-                news.setImageTitle(element.attr("title"));
+                news.setImage(Settings.bytesFromUrl(src));
                 news.setDescription(getDescription(doc));
                 news.setReady(true);
                 App.getDataSource().addNews(news);

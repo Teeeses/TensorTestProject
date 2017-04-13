@@ -57,18 +57,21 @@ public class CurrentNewsFragment extends Fragment {
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvImageTitle = (TextView) view.findViewById(R.id.tvImageTitle);
 
-        updateInfo();
+        updateHandler.postDelayed(run, 0);
         return view;
     }
 
     private void updateInfo() {
-        Bitmap image = currentNews.getImage();
-        if(image != null) {
-            float mode = App.getWidthScreen()/image.getWidth();
-            ivImage.setImageBitmap(Bitmap.createScaledBitmap(image, (int)(image.getWidth()*mode), (int)(image.getHeight()*mode), false));
+        if(currentNews != null) {
+            if (currentNews.getImage() != null) {
+                Bitmap image = Settings.bytesToBitmap(currentNews.getImage());
+                float mode = App.getWidthScreen() / image.getWidth();
+                ivImage.setImageBitmap(Bitmap.createScaledBitmap(image, (int) (image.getWidth() * mode), (int) (image.getHeight() * mode), false));
+            }
+            tvImageTitle.setText(currentNews.getTitle());
+
+            tvDescription.setText(currentNews.getDescription());
         }
-        tvImageTitle.setText(currentNews.getImageTitle());
-        tvDescription.setText(currentNews.getDescription());
     }
 
     @Override

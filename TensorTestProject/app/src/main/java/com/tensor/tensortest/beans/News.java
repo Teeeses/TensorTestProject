@@ -29,14 +29,11 @@ public class News {
     //Время публикации в миллисекундах
     private long timeMills;
 
-    //src у img в html документе
-    private String linkImage;
-
     //Надпись под изображением
     private String imageTitle;
 
     //Изображение новости
-    private Bitmap image;
+    private byte[] image;
 
     //Получены новости или нет
     private Boolean ready = false;
@@ -53,11 +50,11 @@ public class News {
         this.ready = ready;
     }
 
-    public Bitmap getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -67,14 +64,6 @@ public class News {
 
     public void setImageTitle(String imageTitle) {
         this.imageTitle = imageTitle;
-    }
-
-    public String getLinkImage() {
-        return linkImage;
-    }
-
-    public void setLinkImage(String linkImage) {
-        this.linkImage = linkImage;
     }
 
     public String getDescription() {

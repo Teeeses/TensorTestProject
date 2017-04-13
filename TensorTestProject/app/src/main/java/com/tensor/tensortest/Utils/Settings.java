@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -32,9 +33,9 @@ public class Settings {
      * @return - отформатированное время
      */
     public static String timeToString(String str){
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.ROOT);
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.ENGLISH);
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        SimpleDateFormat resultFormatter = new SimpleDateFormat("dd MMM HH:mm", Locale.ROOT);
+        SimpleDateFormat resultFormatter = new SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH);
         try {
             Date result = formatter.parse(str);
             return resultFormatter.format(result.getTime());
@@ -50,7 +51,7 @@ public class Settings {
      * @return - миллисекунды
      */
     public static long stringToMills(String str) {
-        SimpleDateFormat  formatter = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.ROOT);
+        SimpleDateFormat  formatter = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.ENGLISH);
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             return formatter.parse(str).getTime();
@@ -59,6 +60,19 @@ public class Settings {
         }
         return System.currentTimeMillis();
     }
+
+    public static String getDate(long milliSeconds)
+    {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH);
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
+    }
+
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         return ((BitmapDrawable) drawable).getBitmap();
@@ -71,8 +85,35 @@ public class Settings {
         connection.connect();
         InputStream input = connection.getInputStream();
 
+
         x = BitmapFactory.decodeStream(input);
         return new BitmapDrawable(x);
+    }
+
+    public static byte[] bytesFromUrl(String url) throws IOException {
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.connect();
+        InputStream input = connection.getInputStream();
+
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+
+        // this is storage overwritten on each iteration with bytes
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        // we need to know how may bytes were read to write them to the byteBuffer
+        int len = 0;
+        while ((len = input.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+
+        // and then we can return your byte array.
+        return byteBuffer.toByteArray();
+    }
+
+    public static  Bitmap bytesToBitmap(byte[] arrey) {
+        return BitmapFactory.decodeByteArray(arrey, 0, arrey.length);
     }
 
     public static Bitmap resize(Drawable image, int width, int height) {
@@ -92,4 +133,6 @@ public class Settings {
     public static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
+
+
 }

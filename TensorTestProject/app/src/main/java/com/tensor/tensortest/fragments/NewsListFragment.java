@@ -20,6 +20,7 @@ import com.tensor.tensortest.Web.RxRequest;
 import com.tensor.tensortest.adapters.NewsAdapter;
 import com.tensor.tensortest.beans.News;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class NewsListFragment extends Fragment {
 
         List<News> generalList = App.getNews();
         //Добавляем только те новости, которых нет в списке новостей
-        for(int i = listNews.size() - 1; i >= 0; i--) {
+        /*for(int i = listNews.size() - 1; i >= 0; i--) {
             if(generalList.size() != 0) {
                 if (listNews.get(i).getTimeMills() > generalList.get(0).getTimeMills()) {
 
@@ -97,7 +98,25 @@ public class NewsListFragment extends Fragment {
             } else {
                 generalList.add(0, listNews.get(i));
             }
+        }*/
+        List<News> addedList = new ArrayList<>();
+        for(int i = listNews.size() - 1; i >= 0; i--) {
+            boolean value = false;
+            for(int j = 0; j < generalList.size(); j++) {
+                String pubTimeOne = listNews.get(i).getPubDate();
+                String pubTimeTwo = generalList.get(j).getPubDate();
+                if(pubTimeOne.equals(pubTimeTwo)) {
+                    value = true;
+                    break;
+                }
+            }
+            if(!value) {
+                Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
+                addedList.add(0, listNews.get(i));
+            }
         }
+        generalList.addAll(0, addedList);
+
     }
 
     /**
@@ -121,7 +140,7 @@ public class NewsListFragment extends Fragment {
 
             @Override
             public void onNext(News news) {
-                Log.d(Settings.TAG, "Новость: " + news.getTitle() + " " + news.getShortDescription());
+                Log.d(Settings.TAG, "Получена новость из запроса: " + news.getTitle() + " " + news.getShortDescription());
                 App.getNews().add(0, news);
                 adapter.notifyDataSetChanged();
             }
