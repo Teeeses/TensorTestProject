@@ -36,6 +36,10 @@ public class DataSource {
         dbHelper.close();
     }
 
+    /**
+     * Добавить новость в базу
+     * @param news - новость
+     */
     public void addNews(News news) {
         ContentValues values = new ContentValues();
         values.put(NewsContract.NewsEntry.COLUMN_TITLE, news.getTitle());
@@ -57,6 +61,10 @@ public class DataSource {
         cursor.close();
     }
 
+    /**
+     * Получаем все данные из базы
+     * @return - list данных
+     */
     public List<News> getAllNews() {
         List<News> listNews = new ArrayList<>();
 
@@ -75,6 +83,11 @@ public class DataSource {
         return listNews;
     }
 
+    /**
+     * Запись данных новости из базы данных
+     * @param cursor - позиция в базе
+     * @return - готовую новость
+     */
     private News cursorToNews(Cursor cursor) {
         News news = new News();
         news.setTitle(cursor.getString(1));

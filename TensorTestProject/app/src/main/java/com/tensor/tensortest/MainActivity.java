@@ -17,12 +17,10 @@ import com.tensor.tensortest.beans.News;
 import com.tensor.tensortest.fragments.CurrentNewsFragment;
 import com.tensor.tensortest.fragments.NewsListFragment;
 
-import static org.jsoup.nodes.Entities.EscapeMode.base;
 
 public class MainActivity extends AppCompatActivity {
 
     private Fragment currentFragment;
-
 
     private ProgressBar progressBar;
 
@@ -71,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    /**
+     * Показ спинера загружки
+     * @param visible - мод показа
+     */
     public void setProgressBarVisibility(int visible) {
         progressBar.setVisibility(visible);
     }
@@ -107,7 +109,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    /**
+     * Устанавливает title на toolbar
+     * @param stringId
+     */
     public void setToolbarTitle(int stringId) {
         setTitle(getResources().getString(stringId));
     }

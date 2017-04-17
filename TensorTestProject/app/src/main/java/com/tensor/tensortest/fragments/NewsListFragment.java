@@ -1,6 +1,5 @@
 package com.tensor.tensortest.fragments;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -44,6 +43,7 @@ public class NewsListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         newsRecyclerView.setLayoutManager(manager);
 
+
         adapter = new NewsAdapter(getContext(), (View recyclerView, int position) -> {
             if(position >= 0) {
                 ((MainActivity) getActivity()).openCurrentNewsFragment(App.getNews().get(position));
@@ -52,6 +52,7 @@ public class NewsListFragment extends Fragment {
         });
         newsRecyclerView.setAdapter(adapter);
         newsRecyclerView.addOnItemTouchListener(adapter);
+
 
 
         swipeRefresher = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
@@ -87,18 +88,6 @@ public class NewsListFragment extends Fragment {
         Collections.sort(listNews, (a, b) -> a.getTimeMills() < b.getTimeMills() ? 1  : -1);
 
         List<News> generalList = App.getNews();
-        //Добавляем только те новости, которых нет в списке новостей
-        /*for(int i = listNews.size() - 1; i >= 0; i--) {
-            if(generalList.size() != 0) {
-                if (listNews.get(i).getTimeMills() > generalList.get(0).getTimeMills()) {
-
-                    Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
-                    generalList.add(0, listNews.get(i));
-                }
-            } else {
-                generalList.add(0, listNews.get(i));
-            }
-        }*/
         List<News> addedList = new ArrayList<>();
         for(int i = listNews.size() - 1; i >= 0; i--) {
             boolean value = false;

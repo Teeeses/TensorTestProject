@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.tensor.tensortest.Utils.Settings;
 
-import java.util.Set;
 
 /**
  * Created by develop on 03.04.2017.

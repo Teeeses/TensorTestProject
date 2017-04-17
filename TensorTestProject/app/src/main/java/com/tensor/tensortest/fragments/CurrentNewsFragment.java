@@ -61,6 +61,9 @@ public class CurrentNewsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Обновляем данные новости, если они есть
+     */
     private void updateInfo() {
         if(currentNews != null) {
             if (currentNews.getImage() != null) {

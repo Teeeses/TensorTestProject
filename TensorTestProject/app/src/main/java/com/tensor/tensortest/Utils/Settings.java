@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +60,11 @@ public class Settings {
         return System.currentTimeMillis();
     }
 
+    /**
+     * Ковертируем миллисекунды в дату
+     * @param milliSeconds - миллисекунды
+     * @return - дата в заданном формате
+     */
     public static String getDate(long milliSeconds)
     {
         // Create a DateFormatter object for displaying date in specified format.
@@ -90,6 +94,12 @@ public class Settings {
         return new BitmapDrawable(x);
     }
 
+    /**
+     * Забераем байты картинки
+     * @param url
+     * @return
+     * @throws IOException
+     */
     public static byte[] bytesFromUrl(String url) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -98,17 +108,14 @@ public class Settings {
 
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 
-        // this is storage overwritten on each iteration with bytes
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 
-        // we need to know how may bytes were read to write them to the byteBuffer
         int len = 0;
         while ((len = input.read(buffer)) != -1) {
             byteBuffer.write(buffer, 0, len);
         }
 
-        // and then we can return your byte array.
         return byteBuffer.toByteArray();
     }
 

@@ -70,7 +70,4 @@ public class App extends Application {
         App.heightScreen = heightScreen;
     }
 
-    public static void addToListNews(List<News> list) {
-        App.getNews().addAll(0, list);
-    }
 }

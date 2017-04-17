@@ -1,0 +1,13 @@
+<resources>
+    <dimen name="standard_size_text">20sp</dimen>
+    <dimen name="more_standard_size_text">30sp</dimen>
+    <dimen name="big_size_text">40sp</dimen>
+    <dimen name="mini_size_text">15sp</dimen>
+
+    <dimen name="mini_margin">10dp</dimen>
+    <dimen name="standard_margin">20dp</dimen>
+    <dimen name="big_margin">40dp</dimen>
+
+    <dimen name="radius_angle">5dp</dimen>
+    <dimen name="width_line">1.5dp</dimen>
+</resources>
