@@ -1,11 +1,7 @@
 package com.tensor.tensortest;
 
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,15 +15,14 @@ import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
 import com.tensor.tensortest.fragments.CurrentNewsFragment;
-import com.tensor.tensortest.fragments.GeneralFragment;
 import com.tensor.tensortest.fragments.NewsListFragment;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import static org.jsoup.nodes.Entities.EscapeMode.base;
+
+public class MainActivity extends AppCompatActivity {
 
     private Fragment currentFragment;
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
 
     private ProgressBar progressBar;
 
@@ -41,32 +36,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         App.setHeightScreen(displaymetrics.heightPixels);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbarTitle(R.string.news);
         setSupportActionBar(toolbar);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        App.getDataSource().open();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        openNewsFragment();
 
-        openGeneralFragment();
-
-    }
-
-    /**
-     * Открытие генерального фрагмента
-     */
-    public void openGeneralFragment() {
-        Log.d(Settings.UI_TAG, "Open General Fragment");
-        setToolbarTitle(R.string.general);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new GeneralFragment();
-        transaction.replace(R.id.fragmentContainer, currentFragment);
-        transaction.commit();
     }
 
     /**
@@ -74,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void openNewsFragment() {
         Log.d(Settings.UI_TAG, "Open News List Fragment");
-        setToolbarTitle(R.string.news);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         currentFragment = new NewsListFragment();
         transaction.replace(R.id.fragmentContainer, currentFragment);
@@ -86,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void openCurrentNewsFragment(News news) {
         Log.d(Settings.UI_TAG, "Open Current News Fragment");
-        setToolbarTitle(R.string.news);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         currentFragment = CurrentNewsFragment.newInstance(news);
         transaction.add(R.id.fragmentContainer, currentFragment);
@@ -101,10 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-            return;
-        }
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             //Диалог подтверждения выхода
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -118,21 +91,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             alert.show();
         } else {
             super.onBackPressed();
+            if(getSupportFragmentManager().getBackStackEntryCount() == 0)
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_general) {
-            openGeneralFragment();
-        } else if (id == R.id.nav_news) {
-            openNewsFragment();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+
+        return super.onOptionsItemSelected(item);
     }
+
 
     public void setToolbarTitle(int stringId) {
         setTitle(getResources().getString(stringId));
