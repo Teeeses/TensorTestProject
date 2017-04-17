@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">News Yaroslavl</string>
+
+    <string name="general">Main</string>
+    <string name="news">News online</string>
+
+
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+
+</resources>
