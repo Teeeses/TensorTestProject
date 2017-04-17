@@ -96,7 +96,7 @@ public class SiteParsing {
                 news.setDescription(getDescription(doc));
                 news.setReady(true);
                 App.getDataSource().addNews(news);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
