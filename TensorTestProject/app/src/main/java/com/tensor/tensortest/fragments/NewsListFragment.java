@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.tensor.tensortest.Web.SiteParsing;
+import com.tensor.tensortest.Web.WebSetting;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.MainActivity;
 import com.tensor.tensortest.R;
@@ -129,8 +131,10 @@ public class NewsListFragment extends Fragment {
 
             @Override
             public void onNext(News news) {
-                Log.d(Settings.TAG, "Получена новость из запроса: " + news.getTitle() + " " + news.getShortDescription());
-                App.getNews().add(0, news);
+                if(App.checkIsNewsInList(news.getName())) {
+                    Log.d(Settings.TAG, "Новость добавлена в список: " + news.getTitle() + " " + news.getShortDescription());
+                    App.getNews().add(news);
+                }
                 adapter.notifyDataSetChanged();
             }
         };

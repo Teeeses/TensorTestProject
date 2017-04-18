@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tensor.tensortest.MainActivity;
 import com.tensor.tensortest.app.App;
 
 /**
@@ -20,6 +21,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             App.setNetworkStatus(false);
         } else {
             App.setNetworkStatus(true);
+            ((MainActivity)context).appearInternet();
         }
     }
 }

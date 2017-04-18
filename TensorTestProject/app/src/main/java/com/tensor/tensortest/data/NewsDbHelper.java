@@ -16,7 +16,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "news.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 9;
 
     public NewsDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,7 +24,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Вызывается при создании базы данных
+     * Вызывается при создании таблицы
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -32,6 +32,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
         // Строка для создания таблицы
         String SQL_CREATE_TABLE = "create table " + NewsContract.NewsEntry.TABLE_NAME + " ("
                 + NewsContract.NewsEntry._ID + " integer primary key autoincrement, "
+                + NewsContract.NewsEntry.COLUMN_NAME + " text not null, "
                 + NewsContract.NewsEntry.COLUMN_TITLE + " text not null, "
                 + NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION + " text not null, "
                 + NewsContract.NewsEntry.COLUMN_DESCRIPTION + " text not null, "

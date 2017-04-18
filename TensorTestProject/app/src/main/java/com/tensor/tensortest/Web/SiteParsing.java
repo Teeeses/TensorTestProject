@@ -1,5 +1,9 @@
 package com.tensor.tensortest.Web;
 
+import android.util.Log;
+
+import com.tensor.tensortest.MainActivity;
+import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
@@ -17,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,111 +35,97 @@ public class SiteParsing {
 
     public SiteParsing() {}
 
-    /**
-     * Получение краткого содержания новостей
-     * @param urlSite - сайт откуда берем информацию о новостях
-     * @return - возвращаем список новостей с неполной информацией
-     */
-    public List<News> getNewsLinks(String urlSite) {
-        List<News> newsList = new ArrayList<>();
-        try {
-            URL url = new URL(urlSite);
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            org.w3c.dom.Document doc = db.parse(new InputSource(url.openStream()));
-            doc.getDocumentElement().normalize();
 
-            NodeList nodeList = doc.getElementsByTagName("item");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    News news = new News();
-                    Element element = (Element) node;
-                    String datePublicNews = getNode("pubDate", element);
-                    /**
-                     * Проверка: если дата пуцбликации текущей добавляемой новости совпадает с датой публикации самой последней новости(первая в списке),
-                     * то значит все новые новости пройдены, поэтому выходим
-                     */
-                    if(App.getNews().size() != 0 && datePublicNews.equals(App.getNews().get(0).getPubDate())) {
-                        return newsList;
-                    }
-                    news.setLink(getNode("link", element));
-                    news.setTitle(getNode("title", element));
-                    news.setShortDescription(getNode("description", element));
-                    news.setPubDate(getNode("pubDate", element));
-                    newsList.add(news);
+    /**
+     * Получение полного описания новости
+     * @param element - div с новостью
+     * @return - возвращаем строку со всеми обзацами новости
+     */
+    public String getDescription(org.jsoup.nodes.Element element) {
+        StringBuilder strBuilder = new StringBuilder();
+        Elements select = element.select(".news-block-justify noindex");
+        int size = select.get(0).children().size();
+        for(int i = 0; i < size; i++) {
+            org.jsoup.nodes.Element elem = select.get(0).child(i);
+            if(elem.tagName().equals("p")) {
+                if(!elem.text().trim().equals("")) {
+                    strBuilder
+                            .append("     ")
+                            .append(elem.text().trim()).append("\n\n");
                 }
+            } else if(elem.tagName().equals("ul")) {
+                for(int k = 0; k < elem.children().size(); k++) {
+                    if(!elem.child(k).text().trim().equals("")) {
+                        strBuilder
+                                .append("     ")
+                                .append(MainActivity.getRes().getString(R.string.point))
+                                .append("  ")
+                                .append(elem.child(k).text().trim())
+                                .append("\n");
+                    }
+                }
+                strBuilder.append("\n");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (SAXException e) {
-            e.printStackTrace();
-            return null;
         }
-        return newsList;
+        String result = strBuilder.toString();
+        return result;
     }
 
     /**
-     * Получаем все отсальные данные о новости перейдя по ссылке link и добавляем в базу
-     * @param news - новость которую нужно дозаполнить
-     * @return - возвращаем новоть которую дополнили информацией
+     * Получаем список div элементов класса "news-record record_feed_list" с заданной страницы
      */
-    public News getNews(News news) {
+    public List<org.jsoup.nodes.Element> getNewsDivElements(String url) {
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(url).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(Settings.TAG, "Не удалось открыть страницу");
+            return null;
+        }
+
+        Elements elements = doc.select(".news-record");
+        List<org.jsoup.nodes.Element> result = new ArrayList<>();
+        for(org.jsoup.nodes.Element current: elements) {
+            result.add(current);
+        }
+        return result;
+    }
+
+    public News parsingDiv(org.jsoup.nodes.Element element) {
+        News news = new News();
+        //Получение времени добавления новости
+        String time = element.select(".news-block-left > span").text();
+        news.setPubDate(time);
+
+        //Получение уникального имени
+        String name = element.select(".news-record a").attr("name");
+        news.setName(name);
+
+        //Получение заголовка
+        String title = element.select(".title2").text();
+        news.setTitle(title);
+
+        //Получение короткого описания новости
+        String shortDescription = element.select(".fotorama_frame_description").text();
+        news.setShortDescription(shortDescription);
+
+        //Получение полного описания нвоости
+        news.setDescription(getDescription(element));
+
+        //Получение изображения нвоости
+        String src = element.select(".img-responsive").attr("src");
         Thread myThready = new Thread(() -> {
             try {
-                Document doc = Jsoup.connect(news.getLink()).get();
-                //Elements element = doc.select(".fotorama__img");
-                Elements element = doc.select(".img-responsive");
-
-                //Elements elementImageTitle = doc.getElementsByClass(".fotorama__caption__wrap");
-                String src = element.attr("src");
                 news.setImage(Settings.bytesFromUrl(src));
-                news.setDescription(getDescription(doc));
                 news.setReady(true);
                 App.getDataSource().addNews(news);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         myThready.start();
 
         return news;
-    }
-
-    /**
-     * Получение полного описания новости
-     * @param doc - страница с новостью которую открыли
-     * @return - возвращаем строку со всеми обзацами новости
-     */
-    public String getDescription(Document doc) {
-        StringBuilder strBuilder = new StringBuilder();
-        Elements select = doc.select(".js-mediator-article p");
-        for(int i = 0; i < select.size(); i++) {
-            String str = select.get(i).text().trim();
-            if(!str.equals("")) {
-                if(i != 0)
-                    strBuilder.append("\n\n");
-                strBuilder.append("     ").append(str);
-            }
-        }
-
-        return strBuilder.toString();
-    }
-
-    /**
-     * Получение содержимого по тегу
-     * @param tag - название тега
-     * @param element - элемент в котором он содержиться
-     * @return - возвращаем содержание
-     */
-    private String getNode(String tag, Element element) {
-        NodeList linkNodeList = element.getElementsByTagName(tag).item(0)
-                .getChildNodes();
-        Node nodeLink = linkNodeList.item(0);
-        return nodeLink.getNodeValue();
     }
 }

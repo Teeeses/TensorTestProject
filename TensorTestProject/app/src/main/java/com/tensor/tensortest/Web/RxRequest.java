@@ -1,8 +1,8 @@
 package com.tensor.tensortest.Web;
 
+import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.beans.News;
 
-import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -22,23 +22,23 @@ public class RxRequest {
     public static Observable<News> getNewsObservable() {
         SiteParsing webParsing = new SiteParsing();
         return queryNewsLinks()
-                .flatMap((news) -> {
-                        Collections.reverse(news);
-                        return Observable.from(news);
+                .flatMap((div) -> {
+                        //Collections.reverse(news);
+                        return Observable.from(div);
                 })
-                .map(news -> webParsing.getNews(news))
+                .map(div -> webParsing.parsingDiv(div))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**
-     * Создаем Observable для получения списка новостей из xml
+     * Создаем Observable для получения листа элементов класса "news-record record_feed_list"
      * @return - Observable
      */
-    public static Observable<List<News>> queryNewsLinks() {
+    public static Observable<List<org.jsoup.nodes.Element>> queryNewsLinks() {
         SiteParsing webParsing = new SiteParsing();
-        return Observable.create( (Observable.OnSubscribe<List<News>>) subscriber -> {
-                        subscriber.onNext(webParsing.getNewsLinks(WebSetting.SITE_URL));
+        return Observable.create( (Observable.OnSubscribe<List<org.jsoup.nodes.Element>>) subscriber -> {
+                        subscriber.onNext(webParsing.getNewsDivElements(WebSetting.SITE_URL + "?p=" + Integer.toString(App.getCurrentPage())));
                         subscriber.onCompleted();
                 }).subscribeOn(Schedulers.newThread());
     }

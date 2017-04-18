@@ -15,11 +15,11 @@ public class NewsContract {
         public final static String TABLE_NAME = "news";
 
         public final static String _ID  = BaseColumns._ID;
+        public final static String COLUMN_NAME = "name";
         public final static String COLUMN_TITLE = "title";
         public final static String COLUMN_SHORT_DESCRIPTION = "shortDescription";
         public final static String COLUMN_DESCRIPTION = "description";
         public final static String COLUMN_PUB_DATE = "pubDate";
-        public final static String COLUMN_IMAGE_TITLE = "imageTitle";
         public final static String COLUMN_READY = "ready";
         public final static String COLUMN_IMAGE = "image";
     }

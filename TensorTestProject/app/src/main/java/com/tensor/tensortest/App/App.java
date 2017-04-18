@@ -35,6 +35,8 @@ public class App extends Application {
      */
     private static boolean networkStatus;
 
+    private static int currentPage = 1;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -70,4 +72,25 @@ public class App extends Application {
         App.heightScreen = heightScreen;
     }
 
+    public static int getCurrentPage() {
+        return currentPage;
+    }
+
+    public static void setCurrentPage(int currentPage) {
+        App.currentPage = currentPage;
+    }
+
+    /**
+     * Проверка, есть такая новость в списке или нет
+     * @param name - уникальное имя
+     * @return - есть(true) или нет(false)
+     */
+    public static boolean checkIsNewsInList(String name) {
+        for(News current: App.getNews()) {
+            if(current.getName().equals(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

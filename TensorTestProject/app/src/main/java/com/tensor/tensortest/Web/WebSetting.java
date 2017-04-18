@@ -6,6 +6,6 @@ package com.tensor.tensortest.Web;
 
 public class WebSetting {
 
-    public final static String SITE_URL = "http://76.ru/text/rss.xml";
+    public final static String SITE_URL = "http://76.ru/text/newsline/";
 
 }

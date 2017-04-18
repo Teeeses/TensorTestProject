@@ -8,4 +8,6 @@
     <string name="loading">Загрузка...</string>
     <string name="error">Ошибка</string>
 
+    <string name="point">\u2022</string>
+
 </resources>

@@ -11,9 +11,6 @@ import com.tensor.tensortest.Utils.Settings;
 
 public class News {
 
-    //Ссылка на новость
-    private String link;
-
     //Заголовок новости
     private String title;
 
@@ -29,14 +26,14 @@ public class News {
     //Время публикации в миллисекундах
     private long timeMills;
 
-    //Надпись под изображением
-    private String imageTitle;
-
     //Изображение новости
     private byte[] image;
 
     //Получены новости или нет
     private Boolean ready = false;
+
+    //Уникальное имя новости вида: "r289210712211456"
+    private String name;
 
 
 
@@ -58,28 +55,12 @@ public class News {
         this.image = image;
     }
 
-    public String getImageTitle() {
-        return imageTitle;
-    }
-
-    public void setImageTitle(String imageTitle) {
-        this.imageTitle = imageTitle;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getShortDescription() {
@@ -97,6 +78,14 @@ public class News {
     public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
         setTimeMills();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setTitle(String title) {

@@ -1,5 +1,6 @@
 package com.tensor.tensortest;
 
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,7 @@ import com.tensor.tensortest.fragments.NewsListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Resources res;
     private Fragment currentFragment;
 
     private ProgressBar progressBar;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
         App.setWidthScreen(displaymetrics.widthPixels);
         App.setHeightScreen(displaymetrics.heightPixels);
+
+        res = getResources();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setToolbarTitle(R.string.news);
@@ -110,6 +114,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Появилось соединение с интернетом
+     */
+    public void appearInternet() {
+        if(currentFragment instanceof NewsListFragment) {
+            ((NewsListFragment)currentFragment).update();
+        }
+    }
+
+    /**
      * Устанавливает title на toolbar
      * @param stringId
      */
@@ -127,5 +140,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         App.getDataSource().close();
+    }
+
+    public static Resources getRes() {
+        return res;
     }
 }

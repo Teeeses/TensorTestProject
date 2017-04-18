@@ -50,7 +50,7 @@ public class Settings {
      * @return - миллисекунды
      */
     public static long stringToMills(String str) {
-        SimpleDateFormat  formatter = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z", Locale.ENGLISH);
+        SimpleDateFormat  formatter = new SimpleDateFormat("dd MMM yyyy hh:mm", Locale.ROOT);
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             return formatter.parse(str).getTime();
@@ -118,6 +118,8 @@ public class Settings {
 
         return byteBuffer.toByteArray();
     }
+
+
 
     public static  Bitmap bytesToBitmap(byte[] arrey) {
         return BitmapFactory.decodeByteArray(arrey, 0, arrey.length);
