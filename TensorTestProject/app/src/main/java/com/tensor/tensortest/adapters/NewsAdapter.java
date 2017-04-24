@@ -16,6 +16,11 @@ import com.tensor.tensortest.async.GetImageFromSrc;
 import com.tensor.tensortest.beans.News;
 
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -28,6 +33,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     private OnItemClickListener listener;
 
     GestureDetector mGestureDetector;
+    private Executor threadPoolExecutor;
+
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -36,6 +43,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     public NewsAdapter(Context context, OnItemClickListener listener) {
         this.listener = listener;
         this.news = App.getNews();
+
+        int corePoolSize = 60;
+        int maximumPoolSize = 80;
+        int keepAliveTime = 10;
+        BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
+        threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
 
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -64,7 +77,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         viewHolder.tvShortDescription.setText(news.get(i).getShortDescription());
 
         if(!news.get(i).isReady()) {
-            new GetImageFromSrc().execute(news.get(i));
+            new GetImageFromSrc().executeOnExecutor(threadPoolExecutor, news.get(i));
         }
     }
 

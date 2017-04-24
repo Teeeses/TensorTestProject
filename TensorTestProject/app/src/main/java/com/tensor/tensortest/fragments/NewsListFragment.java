@@ -72,7 +72,6 @@ public class NewsListFragment extends Fragment {
                             Log.v(Settings.TAG, "Конец");
                         }
                     }
-
                 }
             }
         });
