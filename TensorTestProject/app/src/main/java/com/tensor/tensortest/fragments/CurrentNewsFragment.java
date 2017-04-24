@@ -1,18 +1,18 @@
 package com.tensor.tensortest.fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tensor.tensortest.MainActivity;
+import com.tensor.tensortest.GifImageView;
 import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
@@ -26,6 +26,7 @@ public class CurrentNewsFragment extends Fragment {
 
     private static News currentNews;
 
+    private GifImageView gifView;
     private TextView tvDescription;
     private TextView tvImageTitle;
     private ImageView ivImage;
@@ -36,9 +37,7 @@ public class CurrentNewsFragment extends Fragment {
         public void run() {
             if(currentNews.isReady()) {
                 updateInfo();
-                ((MainActivity)getActivity()).setProgressBarVisibility(View.GONE);
             } else {
-                ((MainActivity)getActivity()).setProgressBarVisibility(View.VISIBLE);
                 updateHandler.postDelayed(run, 1000);
             }
         }
@@ -57,7 +56,12 @@ public class CurrentNewsFragment extends Fragment {
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvImageTitle = (TextView) view.findViewById(R.id.tvImageTitle);
 
-        updateHandler.postDelayed(run, 0);
+        gifView = (GifImageView) view.findViewById(R.id.loadingGif);
+        gifView.setGifImageResource(R.drawable.loading);
+
+
+        updateInfo();
+
         return view;
     }
 
@@ -70,6 +74,7 @@ public class CurrentNewsFragment extends Fragment {
                 Bitmap image = Settings.bytesToBitmap(currentNews.getImage());
                 float mode = App.getWidthScreen() / image.getWidth();
                 ivImage.setImageBitmap(Bitmap.createScaledBitmap(image, (int) (image.getWidth() * mode), (int) (image.getHeight() * mode), false));
+                gifView.setVisibility(View.GONE);
             }
             tvImageTitle.setText(currentNews.getTitle());
 
