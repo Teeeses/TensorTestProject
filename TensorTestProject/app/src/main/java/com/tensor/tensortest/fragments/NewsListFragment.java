@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tensor.tensortest.app.App;
@@ -17,7 +18,6 @@ import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.Web.RxRequest;
 import com.tensor.tensortest.adapters.NewsAdapter;
-import com.tensor.tensortest.async.GetImageFromSrc;
 import com.tensor.tensortest.beans.News;
 
 import java.util.ArrayList;
@@ -35,6 +35,8 @@ public class NewsListFragment extends Fragment {
     private NewsAdapter adapter;
     private SwipeRefreshLayout swipeRefresher;
 
+    private TextView tvDatabaseIsEmpty;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_news, container, false);
@@ -43,6 +45,7 @@ public class NewsListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         newsRecyclerView.setLayoutManager(manager);
 
+        tvDatabaseIsEmpty = (TextView) view.findViewById(R.id.tvDatabaseIsEmpty);
 
         adapter = new NewsAdapter(getContext(), (View recyclerView, int position) -> {
             if(position >= 0) {
@@ -109,29 +112,31 @@ public class NewsListFragment extends Fragment {
      */
     private void refreshFromDatabase() {
 
-            List<News> listNews = App.getDataSource().getAllNews();
-            //Сортируем список полученный из базы по времени добовления новости(элемент с индексом 0 - самая свежая новость)
-            //Collections.sort(listNews, (a, b) -> a.getTimeMills() < b.getTimeMills() ? 1 : -1);
+        List<News> listNews = App.getDataSource().getAllNews();
 
-            List<News> generalList = App.getNews();
-            List<News> addedList = new ArrayList<>();
-            for (int i = listNews.size() - 1; i >= 0; i--) {
-                boolean value = false;
-                for (int j = 0; j < generalList.size(); j++) {
-                    String pubTimeOne = listNews.get(i).getPubDate();
-                    String pubTimeTwo = generalList.get(j).getPubDate();
-                    if (pubTimeOne.equals(pubTimeTwo)) {
-                        value = true;
-                        break;
-                    }
-                }
-                if (!value) {
-                    Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
-                    addedList.add(0, listNews.get(i));
+        List<News> generalList = App.getNews();
+        List<News> addedList = new ArrayList<>();
+        for (int i = listNews.size() - 1; i >= 0; i--) {
+            boolean value = false;
+            for (int j = 0; j < generalList.size(); j++) {
+                String pubTimeOne = listNews.get(i).getPubDate();
+                String pubTimeTwo = generalList.get(j).getPubDate();
+                if (pubTimeOne.equals(pubTimeTwo)) {
+                    value = true;
+                    break;
                 }
             }
-            generalList.addAll(0, addedList);
+            if (!value) {
+                Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
+                addedList.add(0, listNews.get(i));
+            }
+        }
+        generalList.addAll(0, addedList);
+        App.findCurrentPage();
 
+        if(App.getNews().size() != 0) {
+            tvDatabaseIsEmpty.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -149,7 +154,7 @@ public class NewsListFragment extends Fragment {
 
             @Override
             public void onError(Throwable e) {
-                Log.d(Settings.TAG, "Ошибка: " + e.toString());
+                Log.d(Settings.TAG, "Невозможно добавить новость: " + e.toString());
                 Toast.makeText(getActivity(), getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
                 swipeRefresher.setRefreshing(false);
             }
@@ -158,6 +163,7 @@ public class NewsListFragment extends Fragment {
             public void onNext(News news) {
                 if(App.checkIsNewsInList(App.getNews(), news.getName())) {
                     Log.d(Settings.TAG, "Новость добавлена в список: " + news.getTitle() + " " + news.getShortDescription());
+                    tvDatabaseIsEmpty.setVisibility(View.GONE);
                     App.getNews().add(news);
                 }
                 adapter.notifyDataSetChanged();

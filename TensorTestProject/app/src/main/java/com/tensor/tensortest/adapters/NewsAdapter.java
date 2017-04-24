@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     GestureDetector mGestureDetector;
     private Executor threadPoolExecutor;
 
+    private int corePoolSize = 120;
+    private int maximumPoolSize = 200;
+    private int keepAliveTime = 20;
+    private BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
+
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -44,10 +50,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         this.listener = listener;
         this.news = App.getNews();
 
-        int corePoolSize = 60;
-        int maximumPoolSize = 80;
-        int keepAliveTime = 10;
-        BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
         threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
 
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -77,7 +79,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         viewHolder.tvShortDescription.setText(news.get(i).getShortDescription());
 
         if(!news.get(i).isReady()) {
-            new GetImageFromSrc().executeOnExecutor(threadPoolExecutor, news.get(i));
+            try {
+                new GetImageFromSrc().executeOnExecutor(threadPoolExecutor, news.get(i));
+            } catch (RejectedExecutionException e) {
+                e.printStackTrace();
+                threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
+            }
         }
     }
 

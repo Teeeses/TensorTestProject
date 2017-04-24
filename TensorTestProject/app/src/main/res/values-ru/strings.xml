@@ -4,6 +4,7 @@
 
     <string name="general">Главная</string>
     <string name="news">Новости Онлайн</string>
+    <string name="database_is_empty_and_dont_work_internet">База данных пуста и отсутствует подключение к интернету!</string>
 
 
     <string name="loading">Загрузка...</string>

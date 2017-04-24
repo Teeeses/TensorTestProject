@@ -4,6 +4,7 @@
 
     <string name="general">Main</string>
     <string name="news">News online</string>
+    <string name="database_is_empty_and_dont_work_internet">Database is empty and dont work internet!</string>
 
 
     <string name="loading">Loading...</string>

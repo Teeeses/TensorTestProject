@@ -96,4 +96,8 @@ public class App extends Application {
         }
         return true;
     }
+
+    public static void findCurrentPage() {
+        App.currentPage = (news.size() / 30) + 1;
+    }
 }
