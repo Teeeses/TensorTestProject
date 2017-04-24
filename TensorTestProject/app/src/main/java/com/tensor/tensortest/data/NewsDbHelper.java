@@ -16,7 +16,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "news.db";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 16;
 
     public NewsDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,8 +37,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
                 + NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION + " text not null, "
                 + NewsContract.NewsEntry.COLUMN_DESCRIPTION + " text not null, "
                 + NewsContract.NewsEntry.COLUMN_PUB_DATE + " text not null, "
-                + NewsContract.NewsEntry.COLUMN_READY + " text not null, "
-                + NewsContract.NewsEntry.COLUMN_IMAGE + " BLOB);";
+                + NewsContract.NewsEntry.COLUMN_IMAGE_SRC + " text not null);";
 
         Log.d(Settings.TAG, SQL_CREATE_TABLE);
 

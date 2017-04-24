@@ -6,6 +6,7 @@ import com.tensor.tensortest.MainActivity;
 import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
+import com.tensor.tensortest.async.GetImageFromSrc;
 import com.tensor.tensortest.beans.News;
 
 import org.jsoup.Jsoup;
@@ -115,16 +116,9 @@ public class SiteParsing {
 
         //Получение изображения нвоости
         String src = element.select(".img-responsive").attr("src");
-        Thread myThready = new Thread(() -> {
-            try {
-                news.setImage(Settings.bytesFromUrl(src));
-                news.setReady(true);
-                App.getDataSource().addNews(news);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        myThready.start();
+        news.setImageSrc(src);
+
+        App.getDataSource().addNews(news);
 
         return news;
     }

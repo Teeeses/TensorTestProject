@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public class CurrentNewsFragment extends Fragment {
         gifView = (GifImageView) view.findViewById(R.id.loadingGif);
         gifView.setGifImageResource(R.drawable.loading);
 
-
+        Log.d(Settings.TAG, "isReady: " + Boolean.toString(currentNews.getReady()));
         updateInfo();
 
         return view;

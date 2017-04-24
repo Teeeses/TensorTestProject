@@ -29,6 +29,8 @@ public class News {
     //Изображение новости
     private byte[] image;
 
+    private String imageSrc;
+
     //Получены новости или нет
     private Boolean ready = false;
 
@@ -77,7 +79,7 @@ public class News {
 
     public void setPubDate(String pubDate) {
         this.pubDate = pubDate;
-        setTimeMills();
+        //setTimeMills();
     }
 
     public String getName() {
@@ -106,5 +108,13 @@ public class News {
 
     public Boolean getReady() {
         return ready;
+    }
+
+    public String getImageSrc() {
+        return imageSrc;
+    }
+
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
 }

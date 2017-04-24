@@ -5,10 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.app.App;
+import com.tensor.tensortest.async.GetImageFromSrc;
 import com.tensor.tensortest.beans.News;
 
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ public class DataSource {
     private SQLiteDatabase database;
     private NewsDbHelper dbHelper;
     private String[] allColumns = { NewsContract.NewsEntry._ID, NewsContract.NewsEntry.COLUMN_NAME, NewsContract.NewsEntry.COLUMN_TITLE, NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION,
-            NewsContract.NewsEntry.COLUMN_DESCRIPTION, NewsContract.NewsEntry.COLUMN_PUB_DATE, NewsContract.NewsEntry.COLUMN_READY, NewsContract.NewsEntry.COLUMN_IMAGE};
+            NewsContract.NewsEntry.COLUMN_DESCRIPTION, NewsContract.NewsEntry.COLUMN_PUB_DATE, NewsContract.NewsEntry.COLUMN_IMAGE_SRC};
 
     public DataSource(Context context) {
         dbHelper = new NewsDbHelper(context);
@@ -42,15 +45,14 @@ public class DataSource {
      * @param news - новость
      */
     public void addNews(News news) {
-        if(App.checkIsNewsInList(news.getName())) {
+        if(App.checkIsNewsInList(getAllNews(), news.getName()) && database.isOpen()) {
             ContentValues values = new ContentValues();
-            values.put(NewsContract.NewsEntry.TABLE_NAME, news.getName());
+            values.put(NewsContract.NewsEntry.COLUMN_NAME, news.getName());
             values.put(NewsContract.NewsEntry.COLUMN_TITLE, news.getTitle());
             values.put(NewsContract.NewsEntry.COLUMN_SHORT_DESCRIPTION, news.getShortDescription());
             values.put(NewsContract.NewsEntry.COLUMN_DESCRIPTION, news.getDescription());
             values.put(NewsContract.NewsEntry.COLUMN_PUB_DATE, news.getPubDate());
-            values.put(NewsContract.NewsEntry.COLUMN_READY, news.getReady().toString());
-            values.put(NewsContract.NewsEntry.COLUMN_IMAGE, news.getImage());
+            values.put(NewsContract.NewsEntry.COLUMN_IMAGE_SRC, news.getImageSrc());
 
             long insertId = database.insert(NewsContract.NewsEntry.TABLE_NAME, null, values);
             if (insertId == -1) {
@@ -72,19 +74,21 @@ public class DataSource {
      */
     public List<News> getAllNews() {
         List<News> listNews = new ArrayList<>();
+        if (database.isOpen()) {
 
-        Cursor cursor = database.query(NewsContract.NewsEntry.TABLE_NAME,
-                allColumns, null, null, null, null, null);
+            Cursor cursor = database.query(NewsContract.NewsEntry.TABLE_NAME,
+                    allColumns, null, null, null, null, null);
 
 
-        cursor.moveToFirst();
+            cursor.moveToFirst();
 
-        while (!cursor.isAfterLast()) {
-            News result = cursorToNews(cursor);
-            listNews.add(result);
-            cursor.moveToNext();
+            while (!cursor.isAfterLast()) {
+                News result = cursorToNews(cursor);
+                listNews.add(result);
+                cursor.moveToNext();
+            }
+            cursor.close();
         }
-        cursor.close();
         return listNews;
     }
 
@@ -100,8 +104,7 @@ public class DataSource {
         news.setShortDescription(cursor.getString(3));
         news.setDescription(cursor.getString(4));
         news.setPubDate(cursor.getString(5));
-        news.setReady(Boolean.valueOf(cursor.getString(6)));
-        news.setImage(cursor.getBlob(7));
+        news.setImageSrc(cursor.getString(6));
         return news;
     }
 }

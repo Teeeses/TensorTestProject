@@ -21,6 +21,7 @@ public class NewsContract {
         public final static String COLUMN_DESCRIPTION = "description";
         public final static String COLUMN_PUB_DATE = "pubDate";
         public final static String COLUMN_READY = "ready";
+        public final static String COLUMN_IMAGE_SRC = "image_src";
         public final static String COLUMN_IMAGE = "image";
     }
 }

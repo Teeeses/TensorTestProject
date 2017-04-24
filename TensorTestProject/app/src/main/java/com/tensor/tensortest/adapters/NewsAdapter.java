@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
+import com.tensor.tensortest.async.GetImageFromSrc;
 import com.tensor.tensortest.beans.News;
 
 import java.util.List;
@@ -61,6 +62,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         viewHolder.tvNewTitle.setText(news.get(i).getTitle());
         viewHolder.tvPubDate.setText(news.get(i).getPubDate());
         viewHolder.tvShortDescription.setText(news.get(i).getShortDescription());
+
+        if(!news.get(i).isReady()) {
+            new GetImageFromSrc().execute(news.get(i));
+        }
     }
 
     @Override

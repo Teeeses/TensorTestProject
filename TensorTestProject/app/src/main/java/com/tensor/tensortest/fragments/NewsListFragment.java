@@ -11,18 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.tensor.tensortest.Web.SiteParsing;
-import com.tensor.tensortest.Web.WebSetting;
 import com.tensor.tensortest.app.App;
 import com.tensor.tensortest.MainActivity;
 import com.tensor.tensortest.R;
 import com.tensor.tensortest.Utils.Settings;
 import com.tensor.tensortest.Web.RxRequest;
 import com.tensor.tensortest.adapters.NewsAdapter;
+import com.tensor.tensortest.async.GetImageFromSrc;
 import com.tensor.tensortest.beans.News;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import rx.Subscriber;
@@ -55,15 +53,41 @@ public class NewsListFragment extends Fragment {
         newsRecyclerView.setAdapter(adapter);
         newsRecyclerView.addOnItemTouchListener(adapter);
 
+        newsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) //check for scroll down
+                {
+                    int visibleItemCount = manager.getChildCount();
+                    int totalItemCount = manager.getItemCount();
+                    int pastVisiblesItems = manager.findFirstVisibleItemPosition();
+
+                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        if(!swipeRefresher.isRefreshing()) {
+                            swipeRefresher.post(() ->
+                                    swipeRefresher.setRefreshing(true)
+                            );
+                            refreshFromSite();
+                            Log.v(Settings.TAG, "Конец");
+                        }
+                    }
+
+                }
+            }
+        });
+
 
 
         swipeRefresher = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
         swipeRefresher.setOnRefreshListener(() -> update());
 
         update();
 
         return view;
     }
+
 
     /**
      * Обновление новостного листа
@@ -85,28 +109,29 @@ public class NewsListFragment extends Fragment {
      * Получение данных из базы данных
      */
     private void refreshFromDatabase() {
-        List<News> listNews = App.getDataSource().getAllNews();
-        //Сортируем список полученный из базы по времени добовления новости(элемент с индексом 0 - самая свежая новость)
-        Collections.sort(listNews, (a, b) -> a.getTimeMills() < b.getTimeMills() ? 1  : -1);
 
-        List<News> generalList = App.getNews();
-        List<News> addedList = new ArrayList<>();
-        for(int i = listNews.size() - 1; i >= 0; i--) {
-            boolean value = false;
-            for(int j = 0; j < generalList.size(); j++) {
-                String pubTimeOne = listNews.get(i).getPubDate();
-                String pubTimeTwo = generalList.get(j).getPubDate();
-                if(pubTimeOne.equals(pubTimeTwo)) {
-                    value = true;
-                    break;
+            List<News> listNews = App.getDataSource().getAllNews();
+            //Сортируем список полученный из базы по времени добовления новости(элемент с индексом 0 - самая свежая новость)
+            //Collections.sort(listNews, (a, b) -> a.getTimeMills() < b.getTimeMills() ? 1 : -1);
+
+            List<News> generalList = App.getNews();
+            List<News> addedList = new ArrayList<>();
+            for (int i = listNews.size() - 1; i >= 0; i--) {
+                boolean value = false;
+                for (int j = 0; j < generalList.size(); j++) {
+                    String pubTimeOne = listNews.get(i).getPubDate();
+                    String pubTimeTwo = generalList.get(j).getPubDate();
+                    if (pubTimeOne.equals(pubTimeTwo)) {
+                        value = true;
+                        break;
+                    }
+                }
+                if (!value) {
+                    Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
+                    addedList.add(0, listNews.get(i));
                 }
             }
-            if(!value) {
-                Log.d(Settings.TAG, "Добавляем новость из базы в список: " + listNews.get(i).getTitle());
-                addedList.add(0, listNews.get(i));
-            }
-        }
-        generalList.addAll(0, addedList);
+            generalList.addAll(0, addedList);
 
     }
 
@@ -120,6 +145,7 @@ public class NewsListFragment extends Fragment {
                 Log.d(Settings.TAG, "Успешно " + Integer.toString(App.getNews().size()));
                 adapter.notifyDataSetChanged();
                 swipeRefresher.setRefreshing(false);
+                App.addCurrentPage();
             }
 
             @Override
@@ -131,7 +157,7 @@ public class NewsListFragment extends Fragment {
 
             @Override
             public void onNext(News news) {
-                if(App.checkIsNewsInList(news.getName())) {
+                if(App.checkIsNewsInList(App.getNews(), news.getName())) {
                     Log.d(Settings.TAG, "Новость добавлена в список: " + news.getTitle() + " " + news.getShortDescription());
                     App.getNews().add(news);
                 }

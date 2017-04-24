@@ -21,7 +21,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             App.setNetworkStatus(false);
         } else {
             App.setNetworkStatus(true);
-            ((MainActivity)context).appearInternet();
+            ((MainActivity)MainActivity.getActivity()).appearInternet();
         }
     }
 }

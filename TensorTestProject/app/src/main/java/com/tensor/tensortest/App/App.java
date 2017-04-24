@@ -35,6 +35,9 @@ public class App extends Application {
      */
     private static boolean networkStatus;
 
+    /**
+     * Текущая страница откуда загружаем новости
+     */
     private static int currentPage = 1;
 
     @Override
@@ -76,8 +79,8 @@ public class App extends Application {
         return currentPage;
     }
 
-    public static void setCurrentPage(int currentPage) {
-        App.currentPage = currentPage;
+    public static void addCurrentPage() {
+        App.currentPage++;
     }
 
     /**
@@ -85,8 +88,8 @@ public class App extends Application {
      * @param name - уникальное имя
      * @return - есть(true) или нет(false)
      */
-    public static boolean checkIsNewsInList(String name) {
-        for(News current: App.getNews()) {
+    public static boolean checkIsNewsInList(List<News> list, String name) {
+        for(News current: list) {
             if(current.getName().equals(name)) {
                 return false;
             }

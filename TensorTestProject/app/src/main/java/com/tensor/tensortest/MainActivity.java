@@ -1,5 +1,6 @@
 package com.tensor.tensortest;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Resources res;
     private Fragment currentFragment;
+    private static Activity activity;
 
     private ProgressBar progressBar;
 
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        activity = this;
 
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
         App.setWidthScreen(displaymetrics.widthPixels);
@@ -144,5 +148,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static Resources getRes() {
         return res;
+    }
+
+    public static Activity getActivity() {
+        return activity;
     }
 }
